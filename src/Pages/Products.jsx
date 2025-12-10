@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import useProducts from "../Hooks/useProducts";
 import ProductCard from "../Components/ProductCard";
+import SkeletonLoader from "../Components/SkeletonLoader";
+
 
 const Products = () => {
-  const { products } = useProducts();
-  const [search,setSearch] = useState('')
+  const { products,loading } = useProducts();
+  const [search, setSearch] = useState("");
   // console.log(search)
 
-  const term = search.trim().toLocaleLowerCase()
-  const searchedProducts = term?products.filter(product => product.name.toLocaleLowerCase().includes(term)):products
-  console.log(searchedProducts)
+  const term = search.trim().toLocaleLowerCase();
+  const searchedProducts = term
+    ? products.filter((product) =>
+        product.name.toLocaleLowerCase().includes(term)
+      )
+    : products;
+  console.log(searchedProducts);
   return (
     <div>
       <div className="flex justify-between py-5 items-center">
@@ -21,19 +27,24 @@ const Products = () => {
         </h1>
         <label className="floating-label">
           <span>Search Product</span>
-          <input onChange={(e)=>setSearch(e.target.value)}
-          value={search}
+          <input
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
             type="search"
             placeholder="Search Product"
             className="input input-md"
           />
         </label>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-        {searchedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {loading ? (
+        <SkeletonLoader count='16' />
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+          {searchedProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
